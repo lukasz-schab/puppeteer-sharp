@@ -18,7 +18,7 @@ Once you have the version you want, you can download it using the `BrowserFetche
 ```cs
 Console.WriteLine("Downloading browsers");
 
-using var browserFetcher = new BrowserFetcher(SupportedBrowser.Chrome);
+var browserFetcher = new BrowserFetcher(SupportedBrowser.Chrome);
 var chrome118 = await browserFetcher.DownloadAsync("118.0.5993.70");
 var chrome119 = await browserFetcher.DownloadAsync("119.0.5997.0");
 
@@ -51,6 +51,6 @@ await using (var browser = await Puppeteer.LaunchAsync(new()
     Console.WriteLine("Export completed");
 }
 ```
-<sup><a href='https://github.com/hardkoded/puppeteer-sharp/blob/master/lib/PuppeteerSharp.Tests/Browsers/Chrome/ChromeDataTests.cs#L14-L49' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomVersionsExample' title='Start of snippet'>anchor</a></sup>
+<sup><a href='https://github.com/hardkoded/puppeteer-sharp/blob/master/lib/PuppeteerSharp.Tests/Browsers/Chrome/ChromeDataTests.cs#L24-L59' title='Snippet source file'>snippet source</a> | <a href='#snippet-CustomVersionsExample' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 ```

@@ -9,12 +9,22 @@ namespace PuppeteerSharp.Tests.Browsers.Chrome
 {
     public class ChromeDataTests
     {
+        public async Task ReuseChromeExample()
+        {
+            #region ReuseChromeExample
+            var downloadPath = "/Users/dario/chrome";
+            var browserFetcherOptions = new BrowserFetcherOptions { Path = downloadPath };
+            var browserFetcher = new BrowserFetcher(browserFetcherOptions);
+            var installedBrowser = await browserFetcher.DownloadAsync();
+            #endregion
+        }
+
         public async Task Usage()
         {
             #region CustomVersionsExample
             Console.WriteLine("Downloading browsers");
 
-            using var browserFetcher = new BrowserFetcher(SupportedBrowser.Chrome);
+            var browserFetcher = new BrowserFetcher(SupportedBrowser.Chrome);
             var chrome118 = await browserFetcher.DownloadAsync("118.0.5993.70");
             var chrome119 = await browserFetcher.DownloadAsync("119.0.5997.0");
 

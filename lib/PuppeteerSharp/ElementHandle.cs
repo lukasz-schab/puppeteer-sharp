@@ -17,6 +17,8 @@ namespace PuppeteerSharp
     [DebuggerDisplay("{DebuggerDisplay,nq}")]
     public abstract class ElementHandle : JSHandle, IElementHandle
     {
+        private ElementHandle _isolatedHandle;
+
         internal ElementHandle(
             IsolatedWorld world,
             RemoteObject remoteObject) : base(world, remoteObject)
@@ -722,7 +724,17 @@ namespace PuppeteerSharp
                 return await action((TElementHandle)this).ConfigureAwait(false);
             }
 
-            var adoptedThis = await Frame.IsolatedRealm.AdoptHandleAsync(this).ConfigureAwait(false) as ElementHandle;
+            ElementHandle adoptedThis;
+
+            if (_isolatedHandle == null)
+            {
+                _isolatedHandle = adoptedThis = await Frame.IsolatedRealm.AdoptHandleAsync(this).ConfigureAwait(false) as ElementHandle;
+            }
+            else
+            {
+                adoptedThis = _isolatedHandle;
+            }
+
             var result = await action((TElementHandle)adoptedThis).ConfigureAwait(false);
 
             if (result is IJSHandle jsHandleResult)
@@ -888,7 +900,7 @@ namespace PuppeteerSharp
 
         private async Task<BoundingBox> ClickableBoxAsync()
         {
-            var boxes = await this.EvaluateFunctionAsync<BoundingBox[]>(@"element => {
+            var boxes = await EvaluateFunctionAsync<BoundingBox[]>(@"element => {
                 if (!(element instanceof Element)) {
                     return null;
                 }
@@ -908,11 +920,8 @@ namespace PuppeteerSharp
             var parentFrame = frame.ParentFrame;
             while (parentFrame != null)
             {
-                var handle = await frame.FrameElementAsync().ConfigureAwait(false);
-                if (handle == null)
-                {
-                    throw new PuppeteerException("Unsupported frame type");
-                }
+                var handle = await frame.FrameElementAsync().ConfigureAwait(false)
+                    ?? throw new PuppeteerException("Unsupported frame type");
 
                 var parentBox = await handle.EvaluateFunctionAsync<BoundingBox>(@"element => {
                     // Element is not visible.
