@@ -18,6 +18,9 @@ on:
 env:
   DOTNET_VERSION: '8.0.x' # The .NET SDK version to use
 
+permissions:
+  contents: read
+
 jobs:
   build:
     name: build-${{ matrix.browser }}-${{ matrix.mode }}-${{ matrix.os }}
@@ -57,9 +60,14 @@ jobs:
             browser: FIREFOX
             mode: headful
     steps:
-    - uses: actions/checkout@v3
+    - name: Harden the runner (Audit all outbound calls)
+      uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
+      with:
+        egress-policy: audit
+
+    - uses: actions/checkout@a37ce9120846195fa4ece8f58b268e6043cb2f26 # v3.7.0
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@55ec9447dda3d1cf6bd587150f3262f30ee10815 # v3.4.2
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
     - name: Restore (Windows)

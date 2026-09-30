@@ -11,6 +11,9 @@ on:
   # random HH:MM to avoid a load spike on GitHub Actions at 00:00
   - cron: 1 0 * * *
 name: Semgrep
+permissions:
+  contents: read
+
 jobs:
   semgrep:
     name: semgrep/ci
@@ -20,5 +23,10 @@ jobs:
     container:
       image: returntocorp/semgrep
     steps:
-    - uses: actions/checkout@v3
+    - name: Harden the runner (Audit all outbound calls)
+      uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
+      with:
+        egress-policy: audit
+
+    - uses: actions/checkout@a37ce9120846195fa4ece8f58b268e6043cb2f26 # v3.7.0
     - run: semgrep ci
