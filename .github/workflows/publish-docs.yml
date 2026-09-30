@@ -20,9 +20,14 @@ jobs:
       DOTNET_VERSION: '8.0.x' # The .NET SDK version to use
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@a37ce9120846195fa4ece8f58b268e6043cb2f26 # v3.7.0
       - name: Setup .NET Core
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@55ec9447dda3d1cf6bd587150f3262f30ee10815 # v3.4.2
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
       - name: Build
@@ -32,16 +37,16 @@ jobs:
           docfx metadata docfx_project\docfx.json
           docfx build docfx_project\docfx.json -o docs
       - name: Setup Pages
-        uses: actions/configure-pages@v3
+        uses: actions/configure-pages@b8130d9ab958b325bbde9786d62f2c97a9885a0e # v3.0.7
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@a753861a5debcf57bf8b404356158c8e1e33150c # v2.0.0
         with:
           path: 'docs'
       - name: Publish Documentation on GitHub Pages
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@de14547edc9944350dc0481aa5b7afb08e75f254 # v2.0.5
         id: deployment
       - name: Upload Site to artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@ff15f0306b3f739f7b6fd43fb5d26cd321bd4de5 # v3.2.1
         with:
           name: 'Website'
           path: docs/
