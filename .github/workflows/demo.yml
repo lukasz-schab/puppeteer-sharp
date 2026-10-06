@@ -11,6 +11,9 @@ on:
       - "**.csproj"
       - "**/demo.yml"
 
+permissions:
+  contents: read
+
 jobs:
   build:
 
@@ -24,12 +27,18 @@ jobs:
       DOTNET_VERSION: '10.0.x' # The .NET SDK version to use
 
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-dotnet@v1
+    - name: Harden the runner
+      uses: step-security/harden-runner@351661ca32ac09a36dc5ee2d536e3128f2a3c8ed # v2.22.0
+      with:
+        use-policy-store: true
+        api-key: ${{ secrets.STEP_SECURITY_API_KEY }}
+
+    - uses: actions/checkout@0717577d45739eb3c851188b29f50ed6c0b2194e # v2.8.0
+    - uses: actions/setup-dotnet@871f041373faaad213a635d9afb62905ec029bbb # v1.10.1
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
     - name: Setup NuGet
-      uses: NuGet/setup-nuget@v1.0.5
+      uses: step-security/setup-nuget@b53c6b9c5a37611f049ad5ebbbd184d01ff97009 # v4.0.1
 
     - name: Install dependencies
       working-directory: ./demos/PuppeteerSharpPdfDemo
