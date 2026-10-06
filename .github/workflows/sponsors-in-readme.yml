@@ -7,17 +7,23 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Harden the runner
+        uses: step-security/harden-runner@351661ca32ac09a36dc5ee2d536e3128f2a3c8ed # v2.22.0
+        with:
+          use-policy-store: true
+          api-key: ${{ secrets.STEP_SECURITY_API_KEY }}
+
       - name: Checkout 🛎️
-        uses: actions/checkout@v2
+        uses: actions/checkout@0717577d45739eb3c851188b29f50ed6c0b2194e # v2.8.0
 
       - name: Generate Sponsors 💖
-        uses: JamesIves/github-sponsors-readme-action@v1
+        uses: JamesIves/github-sponsors-readme-action@02650b8cd445fc16dfef73195f9c406dce041623 # v1.6.1
         with:
           organization: true
           token: ${{ secrets.SPONSORS_README_ACTION_PERSONAL_ACCESS_TOKEN }}
           file: 'README.md'
       - name: Push PR
-        uses: peter-evans/create-pull-request@v5
+        uses: step-security/create-pull-request@50c103da2b9ca12cd5bc013fc6931051a5aa872b # v8.1.1
         with:
           commit-message: Update sponsors
           title: "Update sponsors"

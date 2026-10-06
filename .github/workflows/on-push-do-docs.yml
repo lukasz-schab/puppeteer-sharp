@@ -1,13 +1,24 @@
 name: on-push-do-docs
 on:
   push:
+permissions:
+  contents: read
+
 jobs:
   docs:
+    permissions:
+      contents: write  # for Git to git push
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - name: Harden the runner
+      uses: step-security/harden-runner@351661ca32ac09a36dc5ee2d536e3128f2a3c8ed # v2.22.0
+      with:
+        use-policy-store: true
+        api-key: ${{ secrets.STEP_SECURITY_API_KEY }}
+
+    - uses: actions/checkout@0717577d45739eb3c851188b29f50ed6c0b2194e # v2.8.0
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@55ec9447dda3d1cf6bd587150f3262f30ee10815 # v3.4.2
       with:
         dotnet-version: 10.0.x
     - name: Run MarkdownSnippets
